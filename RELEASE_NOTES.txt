@@ -1,0 +1,1 @@
+First version: read, edit and write Custom MIDI and Mix Key switch programs; automatic backups; settings files; live MIDI monitor.
