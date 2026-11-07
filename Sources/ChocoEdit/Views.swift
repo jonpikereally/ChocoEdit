@@ -29,7 +29,7 @@ struct Toolbar: ToolbarContent {
 
     var body: some ToolbarContent {
         ToolbarItemGroup(placement: .navigation) {
-            Picker("Port", selection: $model.selectedPortName) {
+            Picker("Port", selection: Binding(get: { model.selectedPortName }, set: { model.pickPort($0) })) {
                 if model.ports.isEmpty { Text("No MIDI ports").tag(String?.none) }
                 ForEach(model.ports) { p in
                     Text(p.looksLikeChocolate ? "🍫 \(p.name)" : p.name).tag(String?.some(p.name))

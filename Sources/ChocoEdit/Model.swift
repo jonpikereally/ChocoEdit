@@ -59,10 +59,26 @@ final class EditorModel: ObservableObject {
 
     // MARK: Ports
 
+    /// True once you've picked a port yourself; until then ChocoEdit keeps
+    /// following the pedal (e.g. when it's plugged in after the app opened).
+    private var portPickedByUser = false
+
+    func pickPort(_ name: String?) {
+        selectedPortName = name
+        portPickedByUser = true
+    }
+
     func refreshPorts() {
         ports = MIDIConnection.ports()
-        if selectedPortName == nil || !ports.contains(where: { $0.name == selectedPortName }) {
-            selectedPortName = ports.first(where: \.looksLikeChocolate)?.name ?? ports.first?.name
+        let pedal = ports.first(where: \.looksLikeChocolate)?.name
+        let current = ports.first(where: { $0.name == selectedPortName })
+        if current == nil {
+            // Never fall back to an IAC bus: it's a loopback, not hardware.
+            selectedPortName = pedal ?? ports.first(where: { !$0.name.hasPrefix("IAC") })?.name ?? ports.first?.name
+            portPickedByUser = false
+        } else if let pedal, current?.looksLikeChocolate == false, !portPickedByUser {
+            selectedPortName = pedal
+            status = "Found the pedal on \(pedal)."
         }
         if let c = connectedPortName, !ports.contains(where: { $0.name == c }) {
             connectedPortName = nil

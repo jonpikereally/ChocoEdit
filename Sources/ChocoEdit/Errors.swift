@@ -29,6 +29,7 @@ enum ErrorCode: String, CaseIterable {
     case writeRejected = "CE-208"
     case verifyFailed = "CE-209"
     case wrongDevice = "CE-210"
+    case echoPort = "CE-211"
     // 3xx — files and backups
     case fileReadFailed = "CE-301"
     case fileWrongSize = "CE-302"
@@ -62,6 +63,7 @@ enum ErrorCode: String, CaseIterable {
         case .writeRejected: return "The pedal refused to save a setting."
         case .verifyFailed: return "A setting read back differently from what was written."
         case .wrongDevice: return "The connected device isn't a Chocolate Plus."
+        case .echoPort: return "That MIDI port only echoes back what's sent to it, so it isn't the pedal."
         case .fileReadFailed: return "Couldn't open the settings file."
         case .fileWrongSize: return "That file isn't a Chocolate Plus settings file."
         case .fileWriteFailed: return "Couldn't save the settings file."
@@ -98,6 +100,8 @@ enum ErrorCode: String, CaseIterable {
             return "Read the settings from the pedal again before writing. Your backup from before the write is in ~/Documents/ChocoEdit Backups and can be loaded and written back."
         case .wrongDevice:
             return "Pick the Chocolate Plus in the port menu. ChocoEdit only edits the Chocolate Plus."
+        case .echoPort:
+            return "This is usually an IAC Driver bus or a MIDI thru. Pick the pedal's port in the menu: over USB it's called SINCO."
         case .fileReadFailed, .fileWriteFailed:
             return "Check the file is where you think and that the folder isn't locked."
         case .fileWrongSize:

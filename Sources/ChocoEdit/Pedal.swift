@@ -32,6 +32,7 @@ final class Pedal {
 
     private func exchange(_ packet: [UInt8], expect: SysEx.Command) throws -> SysEx.Reply {
         var lastError: AppError = AppError(.noReply)
+        var heardEcho = false
         for attempt in 0...retries {
             midi.clearInbox()
             trace?("→ \(SysEx.hex(packet))")
@@ -40,11 +41,16 @@ final class Pedal {
             while true {
                 let left = deadline.timeIntervalSinceNow
                 guard left > 0, let msg = midi.nextSysEx(timeout: left) else {
-                    lastError = AppError(.noReply, "no answer to command \(String(format: "%02X", packet[2])) within \(timeout)s (try \(attempt + 1))")
+                    lastError = heardEcho
+                        ? AppError(.echoPort, "the port sent back exactly what ChocoEdit sent and nothing else")
+                        : AppError(.noReply, "no answer to command \(String(format: "%02X", packet[2])) within \(timeout)s (try \(attempt + 1))")
                     break
                 }
                 let raw = SysEx.unwrap(msg)
                 trace?("← \(SysEx.hex(raw))")
+                // A loopback port (an IAC bus, or a MIDI thru) hands our own
+                // request straight back. It's never the pedal's answer.
+                if raw == packet { heardEcho = true; continue }
                 guard raw.count >= 3, raw[0] == 0x00, raw[1] == 0x59 else { continue } // someone else's SysEx
                 do {
                     let reply = try SysEx.parse(raw)

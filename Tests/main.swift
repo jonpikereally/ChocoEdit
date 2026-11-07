@@ -114,11 +114,15 @@ final class FakePedal: PedalTransport {
     var flash: [UInt8]
     var outbox: [[UInt8]] = []
     var dropEvery = 0      // drop every nth reply to exercise retries
+    var echo = false       // send each request straight back first, like an IAC bus
+    var silent = false     // never answer (pure loopback when combined with echo)
     var count = 0
     var writes = 0
     init(_ flash: [UInt8]) { self.flash = flash }
     func clearInbox() { outbox.removeAll() }
     func send(_ bytes: [UInt8]) throws {
+        if echo { outbox.append(bytes) }
+        if silent { return }
         let raw = SysEx.unwrap(bytes)
         let r = try SysEx.parse(raw)
         count += 1
@@ -166,6 +170,22 @@ do {
 } catch {
     check(false, "fake pedal: \(error)")
 }
+
+// MARK: Loopback ports (the CE-210 “calls itself ””  bug, 2026-11-07)
+
+let loop = FakePedal(original); loop.echo = true; loop.silent = true
+let loopPedal = Pedal(loop); loopPedal.timeout = 0.01; loopPedal.retries = 0
+do {
+    _ = try loopPedal.identify()
+    check(false, "an echo-only port must not count as a pedal")
+} catch let e as AppError {
+    check(e.code == .echoPort, "echo-only port reports CE-211 (got \(e.code.rawValue))")
+} catch { check(false, "unexpected error \(error)") }
+
+let echoing = FakePedal(original); echoing.echo = true
+let echoPedal = Pedal(echoing); echoPedal.timeout = 0.01
+check((try? echoPedal.identify())?.name == "FootCtrlPlus", "echo followed by the real answer still identifies the pedal")
+check((try? echoPedal.read(length: 300)) == Array(original.prefix(300)), "reads work through an echoing port")
 
 print("\(passes) passed, \(failures) failed")
 exit(failures == 0 ? 0 : 1)

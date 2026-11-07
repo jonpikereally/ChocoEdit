@@ -50,6 +50,7 @@ Where errors show up:
 | CE-208 | The pedal refused to save a setting. | Read the settings from the pedal again before writing. Your backup from before the write is in ~/Documents/ChocoEdit Backups and can be loaded and written back. |
 | CE-209 | A setting read back differently from what was written. | Read the settings from the pedal again before writing. Your backup from before the write is in ~/Documents/ChocoEdit Backups and can be loaded and written back. |
 | CE-210 | The connected device isn't a Chocolate Plus. | Pick the Chocolate Plus in the port menu. ChocoEdit only edits the Chocolate Plus. |
+| CE-211 | That MIDI port only echoes back what's sent to it, so it isn't the pedal. | This is usually an IAC Driver bus or a MIDI thru. Pick the pedal's port in the menu: over USB it's called SINCO. |
 
 ## Files and backups (3xx)
 
