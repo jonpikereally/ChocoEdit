@@ -90,6 +90,12 @@ struct Welcome: View {
             Text("ChocoEdit").font(.largeTitle.bold())
             Text("An editor for the M-VAVE Chocolate Plus.\nPlug the pedal in with a USB-C data cable, quit CubeSuite, and read its settings.")
                 .multilineTextAlignment(.center).foregroundStyle(.secondary)
+            if !model.pedalPortPresent {
+                Label("The Mac can't see the pedal yet. Switch it on and plug it in with a USB-C data cable; its MIDI port is called SINCO and ChocoEdit picks it up by itself.",
+                      systemImage: "cable.connector.slash")
+                    .font(.callout).foregroundStyle(.orange)
+                    .multilineTextAlignment(.center).frame(maxWidth: 520)
+            }
             HStack {
                 Button("Read from Pedal") { model.readFromPedal() }
                     .buttonStyle(.borderedProminent).tint(accent)

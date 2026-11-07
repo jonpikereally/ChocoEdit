@@ -87,7 +87,7 @@ enum ErrorCode: String, CaseIterable {
         case .midiUnavailable:
             return "Quit and reopen ChocoEdit. If it keeps happening, restart the Mac."
         case .noPedal:
-            return "Plug the pedal into the Mac with a USB-C data cable (not charge-only), switch it on, and click Refresh. Quit CubeSuite first: two editors talking to the pedal at once confuse it."
+            return "Switch the pedal on and plug it into the Mac with a USB-C data cable (not charge-only). Its MIDI port is called SINCO; ChocoEdit switches to it as soon as it appears. To use a different port anyway, pick it in the port menu yourself."
         case .portOpenFailed, .sendFailed:
             return "Unplug the pedal, plug it back in, and click Refresh. Quit CubeSuite if it's open."
         case .notConnected:

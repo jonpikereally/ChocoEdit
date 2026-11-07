@@ -41,7 +41,7 @@ Where errors show up:
 | Code | What happened | What to try |
 |---|---|---|
 | CE-201 | macOS's MIDI system couldn't be opened. | Quit and reopen ChocoEdit. If it keeps happening, restart the Mac. |
-| CE-202 | No Chocolate Plus was found. | Plug the pedal into the Mac with a USB-C data cable (not charge-only), switch it on, and click Refresh. Quit CubeSuite first: two editors talking to the pedal at once confuse it. |
+| CE-202 | No Chocolate Plus was found. | Switch the pedal on and plug it into the Mac with a USB-C data cable (not charge-only). Its MIDI port is called SINCO; ChocoEdit switches to it as soon as it appears. To use a different port anyway, pick it in the port menu yourself. |
 | CE-203 | Couldn't open the pedal's MIDI port. | Unplug the pedal, plug it back in, and click Refresh. Quit CubeSuite if it's open. |
 | CE-204 | The pedal isn't connected. | Pick the pedal in the port menu and click Connect. |
 | CE-205 | Couldn't send MIDI to the pedal. | Unplug the pedal, plug it back in, and click Refresh. Quit CubeSuite if it's open. |

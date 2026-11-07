@@ -92,9 +92,17 @@ final class EditorModel: ObservableObject {
         guard let name = selectedPortName, let port = ports.first(where: { $0.name == name }) else {
             throw AppError(.noPedal, ports.isEmpty ? "no MIDI ports" : "ports: " + ports.map(\.name).joined(separator: ", "))
         }
+        // Don't quiz some other device just because it's first in the list:
+        // with no pedal port, say so (unless you chose this port yourself).
+        if !port.looksLikeChocolate && !portPickedByUser {
+            throw AppError(.noPedal, "no SINCO port; ports seen: " + ports.map(\.name).joined(separator: ", "))
+        }
         if midi.current?.name != port.name { try midi.open(port) }
         return Pedal(midi)
     }
+
+    /// The pedal's port is present (by name). Drives the "not connected" hint.
+    var pedalPortPresent: Bool { ports.contains(where: \.looksLikeChocolate) }
 
     // MARK: Pedal operations
 
