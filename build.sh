@@ -26,6 +26,9 @@ cp Resources/AppIcon.icns ChocoEdit.app/Contents/Resources/AppIcon.icns
 swiftc -O -target arm64-apple-macos13 -module-cache-path "$CACHE" -suppress-warnings \
   -o ChocoEdit.app/Contents/MacOS/ChocoEdit Sources/ChocoEdit/*.swift
 codesign --force --sign - ChocoEdit.app
+# This build copy is for testing. Keep macOS from opening (and the updater
+# from updating) it instead of the installed ~/Applications copy.
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u "$PWD/ChocoEdit.app" >/dev/null 2>&1 || true
 swiftc -O -target arm64-apple-macos13 -module-cache-path "$CACHE" -suppress-warnings -o chocoprobe \
   Tools/chocoprobe/main.swift Sources/ChocoEdit/{SysEx,MIDI,Pedal,Layout,Keys,Errors,Version}.swift
 echo "Built ChocoEdit.app and chocoprobe v$VERSION ($BUILT)"

@@ -23,4 +23,6 @@ ditto --norsrc ChocoEdit.app "$APP" || fail CE-601 "Couldn't copy ChocoEdit into
 xattr -cr "$APP"
 codesign --force --sign - "$APP" || fail CE-602 "Couldn't sign ChocoEdit for this Mac."
 open "$APP" || fail CE-603 "ChocoEdit was installed but couldn't be opened. Open it from ~/Applications yourself."
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -u "$PWD/ChocoEdit.app" >/dev/null 2>&1 || true
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$APP" >/dev/null 2>&1 || true
 echo "Installed $APP"
